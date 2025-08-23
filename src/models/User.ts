@@ -12,8 +12,13 @@ export interface IUser {
     updatedAt?: Date;
 }
 
+export interface changePassword {
+    message: string;
+    status: number;
+}
+
 interface IUserSchema extends mongoose.Model<IUser> {
-    changePassword: (email: string, password: string, newPassword: string) => Promise<void>;
+    changePassword: (email: string, password: string, newPassword: string) => Promise<changePassword>;
     forgetPassword: (email: string, password: string) => Promise<void>;
 }
 
@@ -50,15 +55,25 @@ const userSchema = new Schema<IUserDocument, IUserSchema, IUserMethods>(
 userSchema.statics.changePassword = async function (email: string, password: string, newPassword: string) {
     const user = await this.findOne({email}) as IUserDocument;
     if (!user) {
-        throw new Error("User does not exist");
+        return {
+            message: "User does not exist",
+            status: 404,
+        }
     }
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-        throw new Error("Incorrect password");
+        return {
+            message: "Incorrect email or password",
+            status: 401,
+        }
     }
 
     user.password = newPassword;
     await user.save();
+    return {
+        message: "Password changed successfully",
+        status: 200,
+    }
 }
 
 userSchema.statics.forgetPassword = async function (email: string, candidatePassword: string): Promise<void> {
