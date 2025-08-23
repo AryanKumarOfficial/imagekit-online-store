@@ -8,6 +8,6 @@ const configOptions = {
     }
 }
 
-const transporter = new nodemailer.createTransport(configOptions);
+const transporter = nodemailer.createTransport(configOptions);
 
 export {transporter}

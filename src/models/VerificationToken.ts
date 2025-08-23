@@ -20,27 +20,27 @@ const verificationTokenSchema = new mongoose.Schema<IVerificationToken>({
     },
     token: {
         type: String,
-        required: true,
+        default: () => crypto.randomBytes(32).toString("hex"),
     },
     expires: {
         type: Date,
-        required: true,
+        default: () => new Date(Date.now() + 24 * 60 * 60 * 1000),
     }
 }, {timestamps: true});
 
-verificationTokenSchema.pre("save", async function (next) {
-    try {
-        if (!this.token) {
-            this.token = crypto.randomBytes(32).toString("hex");
-        }
-        if (!this.expires) {
-            this.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        }
-        next();
-    } catch (e: any) {
-        next(e as any);
-    }
-})
+// verificationTokenSchema.pre("save", async function (next) {
+//     try {
+//         if (!this.token) {
+//             this.token = crypto.randomBytes(32).toString("hex");
+//         }
+//         if (!this.expires) {
+//             this.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+//         }
+//         next();
+//     } catch (e: any) {
+//         next(e as any);
+//     }
+// })
 
 verificationTokenSchema.statics.generate = async function (identifier: string): Promise<IVerificationToken> {
     const token = new this({identifier: identifier});
