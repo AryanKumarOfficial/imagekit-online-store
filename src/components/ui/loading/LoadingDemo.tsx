@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import LoadingUI from '@/components/LoadingUI';
-import InlineLoading, { ButtonLoading, CardLoadingSkeleton, ListLoadingSkeleton } from '@/components/InlineLoading';
+import { LoadingUI } from './LoadingUI';
+import { InlineLoading, ButtonLoading, CardLoadingSkeleton, ListLoadingSkeleton } from './InlineLoading';
 
-export default function LoadingDemo() {
+export function LoadingDemo() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
 

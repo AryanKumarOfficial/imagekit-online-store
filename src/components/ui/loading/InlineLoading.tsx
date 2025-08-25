@@ -1,34 +1,29 @@
+"use client";
+
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 interface InlineLoadingProps {
   size?: 'xs' | 'sm' | 'md';
   message?: string;
   showMessage?: boolean;
   color?: 'blue' | 'indigo' | 'purple' | 'green' | 'red';
-  theme?: 'light' | 'dark' | 'auto';
 }
 
-export default function InlineLoading({ 
+export function InlineLoading({ 
   size = 'sm', 
   message = "Loading...", 
   showMessage = true,
-  color = 'blue',
-  theme = 'auto'
+  color = 'blue'
 }: InlineLoadingProps) {
-  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    if (theme === 'auto') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      setIsDark(mediaQuery.matches);
+    setMounted(true);
+  }, []);
 
-      const handleChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else {
-      setIsDark(theme === 'dark');
-    }
-  }, [theme]);
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
   const sizeClasses = {
     xs: 'w-4 h-4',
     sm: 'w-5 h-5',

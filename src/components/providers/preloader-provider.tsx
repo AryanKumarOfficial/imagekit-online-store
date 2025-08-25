@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import Preloader from './Preloader';
+import { Preloader } from '../ui/preloader/Preloader';
 
 interface PreloaderContextType {
   isLoading: boolean;

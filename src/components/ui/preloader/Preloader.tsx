@@ -1,26 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 interface PreloaderProps {
   onComplete?: () => void;
   duration?: number;
   variant?: 'default' | 'minimal' | 'branded' | 'modern' | 'dark' | 'dark-branded';
   showProgress?: boolean;
-  theme?: 'light' | 'dark' | 'auto';
 }
 
-export default function Preloader({ 
+export function Preloader({ 
   onComplete, 
   duration = 3000,
   variant = 'branded',
-  showProgress = true,
-  theme = 'auto'
+  showProgress = true
 }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+  
   const loadingSteps = [
     'Initializing...',
     'Loading assets...',
@@ -29,19 +30,12 @@ export default function Preloader({
     'Welcome!'
   ];
 
-  // Theme detection
+  // Prevent hydration mismatch
   useEffect(() => {
-    if (theme === 'auto') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      setIsDark(mediaQuery.matches);
+    setMounted(true);
+  }, []);
 
-      const handleChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else {
-      setIsDark(theme === 'dark');
-    }
-  }, [theme]);
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
 
   useEffect(() => {
     const interval = setInterval(() => {

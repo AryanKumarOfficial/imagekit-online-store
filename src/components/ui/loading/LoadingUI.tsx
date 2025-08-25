@@ -1,33 +1,26 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 interface LoadingUIProps {
   message?: string;
   variant?: 'default' | 'minimal' | 'overlay';
   size?: 'sm' | 'md' | 'lg';
-  theme?: 'light' | 'dark' | 'auto';
 }
 
-export default function LoadingUI({ 
+export function LoadingUI({ 
   message = "Loading...", 
   variant = 'default',
-  size = 'md',
-  theme = 'auto'
+  size = 'md'
 }: LoadingUIProps) {
-  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    if (theme === 'auto') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      setIsDark(mediaQuery.matches);
+    setMounted(true);
+  }, []);
 
-      const handleChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else {
-      setIsDark(theme === 'dark');
-    }
-  }, [theme]);
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
   const sizeClasses = {
     sm: 'w-12 h-12',
     md: 'w-16 h-16',
