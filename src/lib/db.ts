@@ -38,3 +38,16 @@ export async function connectToDatabase() {
     }
     return cached.conn;
 }
+
+export async function disconnect() {
+    if (cached.conn) {
+        try {
+            await mongoose.disconnect();
+            cached.conn = null;
+            cached.promise = null;
+            console.log("Database connection closed.");
+        } catch (e) {
+            console.error("Error connecting DB: ", e);
+        }
+    }
+}

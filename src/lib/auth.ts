@@ -108,9 +108,9 @@ export const authOptions: NextAuthOptions = {
         },
     },
     pages: {
-        signIn: "/login",
-        error: "/error",
-        verifyRequest: ""
+        // signIn: "/login",
+        // error: "/error",
+        // verifyRequest: ""
     },
     session: {
         strategy: "jwt",

@@ -45,7 +45,7 @@ const ConfirmationMail: FC<confirmMailType> = ({base_url, email, token}) => {
                         </p>
                         <p style={{textAlign: "center", marginBottom: "30px"}}>
                             <a
-                                href={`${base_url}/token=${token}`}
+                                href={`${base_url}?token=${token}`}
                                 style={{
                                     display: "inline-block",
                                     backgroundColor: "#4f46e5",

@@ -33,7 +33,6 @@ const userSchema = new Schema<IUserDocument, IUserSchema, IUserMethods>(
         email: {
             type: String,
             required: true,
-            unique: true,
         },
         password: {
             type: String,
@@ -100,6 +99,8 @@ userSchema.pre("save", async function (next) {
     }
     next();
 });
+userSchema.index({email: 1});
+
 
 const User = (models.User as IUserSchema || model<IUserDocument, IUserSchema>("User", userSchema));
 

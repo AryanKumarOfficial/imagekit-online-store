@@ -1,5 +1,6 @@
 import mongoose, {model, models} from "mongoose";
 import crypto from "crypto";
+import User from "@/models/User";
 
 export interface IVerificationToken {
     identifier: string;
@@ -7,10 +8,15 @@ export interface IVerificationToken {
     expires: Date;
 }
 
+// Define the possible outcomes of a verification attempt
+export type VerificationResult =
+    | { success: true; email: string }
+    | { success: false; reason: "invalid" | "expired" };
+
 interface VerificationTokenModel extends mongoose.Model<IVerificationToken> {
     generate(identifier: string): Promise<IVerificationToken>;
 
-    verify(identifier: string, token: string): Promise<boolean>
+    verify(identifier: string, token: string): Promise<VerificationResult>
 }
 
 const verificationTokenSchema = new mongoose.Schema<IVerificationToken>({
@@ -20,11 +26,12 @@ const verificationTokenSchema = new mongoose.Schema<IVerificationToken>({
     },
     token: {
         type: String,
+        unique: true,
         default: () => crypto.randomBytes(32).toString("hex"),
     },
     expires: {
         type: Date,
-        default: () => new Date(Date.now() + 24 * 60 * 60 * 1000),
+        default: () => new Date(Date.now() + 60 * 60 * 1000),
     }
 }, {timestamps: true});
 
@@ -43,14 +50,44 @@ const verificationTokenSchema = new mongoose.Schema<IVerificationToken>({
 // })
 
 verificationTokenSchema.statics.generate = async function (identifier: string): Promise<IVerificationToken> {
-    const token = new this({identifier: identifier});
+    await this.findOneAndDelete({identifier});
+    const token = new this({identifier});
     await token.save();
     return token;
 }
 
-verificationTokenSchema.statics.verify = async function (identifier: string, token: string): Promise<boolean> {
-    const record = await this.findOneAndDelete({identifier, token, expires: {$gte: new Date(Date.now())}});
-    return !!record;
+verificationTokenSchema.statics.verify = async function (token: string): Promise<VerificationResult> {
+    const record = await this.findOne({token});
+    console.log("record", record);
+    if (!record) {
+        return {success: false, reason: "invalid"};
+    }
+
+    if (record.expires < new Date()) {
+        await this.findOneAndDelete({token});
+        return {success: false, reason: "expired"};
+    }
+
+    const user = await User.findOneAndUpdate({
+            email: record.identifier,
+            isVerified: null
+        },
+        {$set: {isVerified: new Date()}},
+        {new: true}
+    )
+
+    console.log("User verification token", user);
+
+    if (!user) {
+        await this.findOneAndDelete({token});
+        return {success: false, reason: "invalid"};
+    }
+
+    await this.findByIdAndDelete(record._id);
+
+    return {success: true, email: user.email}
+
+
 }
 
 verificationTokenSchema.index({identifier: 1, token: 1}, {unique: true});

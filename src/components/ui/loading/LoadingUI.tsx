@@ -27,12 +27,12 @@ export function LoadingUI({
     lg: 'w-20 h-20'
   };
   if (variant === 'overlay') {
-    const overlayBg = isDark ? 'bg-black bg-opacity-70' : 'bg-black bg-opacity-50';
+    const overlayBg = isDark ? 'bg-black opacity-70' : 'bg-black opacity-50';
     const cardBg = isDark ? 'bg-gray-800' : 'bg-white';
     
     return (
       <div className={`fixed inset-0 ${overlayBg} flex items-center justify-center z-50 backdrop-blur-sm`}>
-        <div className={`${cardBg} rounded-2xl p-8 shadow-2xl`}>
+        <div className={`${cardBg} rounded-2xl p-8 shadow-2xl bg-transparent`}>
           <LoadingSpinner size={size} message={message} isDark={isDark} />
         </div>
       </div>
