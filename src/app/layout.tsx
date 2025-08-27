@@ -1,40 +1,39 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type {Metadata} from "next";
+import {Inter} from "next/font/google";
 import "./globals.css";
-import { PreloaderProvider } from "@/components/providers/preloader-provider";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import Script from "next/script";
+import Providers from "@/app/components/Providers";
+import Header from "@/app/components/Header";
+import React from "react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({subsets: ["latin"]});
 
 export const metadata: Metadata = {
-  title: "ImageKit Store - Premium Digital Marketplace",
-  description: "Discover and purchase premium digital assets, templates, and resources",
+    title: "ImageKit Store - Premium Digital Marketplace",
+    description: "Discover and purchase premium digital assets, templates, and resources",
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
+                                       children,
+                                   }: Readonly<{
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider>
-          <PreloaderProvider>
-            {children}
-          </PreloaderProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" suppressHydrationWarning>
+        <body
+            className={`${inter.className} antialiased`}
+        >
+        <Script
+            src={"https://checkout.razorpay.com/vl/checkout.js"}
+            strategy={"lazyOnload"}
+        />
+        <Providers>
+            <Header/>
+            <main className={"container mx-auto px-4 py-8"}>
+                {children}
+            </main>
+        </Providers>
+        </body>
+        </html>
+    );
 }
