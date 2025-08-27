@@ -3,8 +3,6 @@
 import React from "react";
 import {ImageKitProvider} from "imagekitio-next";
 import {SessionProvider} from "next-auth/react";
-import {ThemeProvider} from "@/components/providers/theme-provider";
-import {PreloaderProvider} from "@/components/providers/preloader-provider";
 import {NotificationProvider} from "@/app/components/Notification";
 
 const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!
@@ -36,11 +34,11 @@ export default function Providers({children}: { children: React.ReactNode }) {
                     publicKey={publicKey}
                     authenticator={authenticator}
                 >
-                    <ThemeProvider>
-                        <PreloaderProvider>
-                            {children}
-                        </PreloaderProvider>
-                    </ThemeProvider>
+                    {/*<ThemeProvider>*/}
+                    {/*    <PreloaderProvider>*/}
+                    {children}
+                    {/*</PreloaderProvider>*/}
+                    {/*</ThemeProvider>*/}
                 </ImageKitProvider>
             </NotificationProvider>
         </SessionProvider>

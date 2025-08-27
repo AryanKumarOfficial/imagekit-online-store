@@ -4,8 +4,10 @@ import React, {useEffect, useState} from 'react'
 import {IProduct} from "@/models/Product";
 import {apiClient} from "@/lib/api-client";
 import ImageGallery from "@/app/components/section/products/ImageGallery";
+import {NotificationTypes, useNotification} from "./components/Notification"
 
 const Home = () => {
+    const {showNotification} = useNotification();
     const [products, setProducts] = useState<IProduct[]>([]);
     useEffect(() => {
         (async () => {
@@ -14,6 +16,7 @@ const Home = () => {
                 setProducts(data);
             } catch (e) {
                 console.error("Error fetching products", e);
+                showNotification("Error fetching products", NotificationTypes.ERROR);
             }
         })()
     }, []);

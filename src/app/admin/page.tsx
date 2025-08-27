@@ -19,7 +19,7 @@ export default function OrdersPage() {
                 const data = await apiClient.getUserOrders();
                 setOrders(data);
             } catch (error) {
-                console.error("Error fetching orders:", error);
+                console.log("Error fetching orders:", error);
             } finally {
                 setLoading(false);
             }

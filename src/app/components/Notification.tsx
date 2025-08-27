@@ -4,6 +4,13 @@ import {createContext, ReactNode, useContext, useState} from "react";
 
 type NotificationType = "success" | "error" | "warning" | "info";
 
+export enum NotificationTypes {
+    SUCCESS = "success",
+    ERROR = "error",
+    WARNING = "warning",
+    INFO = "info"
+}
+
 interface NotificationContextType {
     showNotification: (message: string, type: NotificationType) => void;
 }
