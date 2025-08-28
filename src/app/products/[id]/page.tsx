@@ -66,13 +66,13 @@ export default function ProductPage() {
             });
 
             if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-              showNotification("Razorpay key is missing", "error");
-              return;
+                showNotification("Razorpay key is missing", "error");
+                return;
             }
 
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-                amount,
+                amount: Math.round(amount * 100),
                 currency: "USD",
                 name: "ImageKit Shop",
                 description: `${product.name} - ${variant.type} Version`,
