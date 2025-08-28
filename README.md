@@ -1,36 +1,288 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛍️ ImageKit Online Store
 
-## Getting Started
+A modern, production-ready e-commerce platform for digital image sales with professional authentication and payment processing. Built with Next.js 15, TypeScript, MongoDB, and industry best practices.
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-green)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌐 Live Demo
+
+**[🚀 View Live Demo](https://image-store-delta.vercel.app/)**
+
+Experience the full functionality of the ImageKit Online Store with our live demo deployment.
+
+## ✨ Key Features
+
+### 🔐 Authentication & User Management
+- **NextAuth.js Integration**: Secure credential-based authentication
+- **Email Verification**: Complete verification system with email tokens
+- **Role-Based Access**: User and admin roles with protected routes
+- **Password Management**: Secure password hashing with bcrypt
+- **Session Management**: JWT-based sessions with configurable expiry
+
+### 🛒 E-commerce Functionality
+- **Product Management**: Full CRUD operations for digital images
+- **Multiple Image Variants**: Square, Wide, Portrait formats with different licenses
+- **Razorpay Integration**: Secure payment processing with webhooks
+- **Order Management**: Complete order tracking and status updates
+- **Download System**: High-quality image downloads for completed orders
+
+### 🖼️ ImageKit Integration
+- **Cloud Storage**: Seamless image upload and storage via ImageKit
+- **Image Transformations**: Real-time image resizing and optimization
+- **CDN Delivery**: Fast global image delivery
+- **Quality Controls**: Multiple quality levels for previews and downloads
+
+### 🎨 Modern UI/UX
+- **Responsive Design**: Mobile-first, accessible interface
+- **Professional Components**: Consistent design patterns
+- **Loading States**: Comprehensive loading components
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ and npm/yarn
+- MongoDB database
+- ImageKit account
+- Razorpay account (for payments)
+- Gmail account (for email services)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-org/imagekit-online-store.git
+   cd imagekit-online-store
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Fill in your environment variables (see [Environment Configuration](#environment-configuration))
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## ⚙️ Environment Configuration
+
+Configure these environment variables in your `.env.local`:
+
+### Database
+```env
+MONGODB_URI=mongodb://localhost:27017/imagekit-store
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Authentication
+```env
+NEXTAUTH_SECRET=your-nextauth-secret-key
+NEXTAUTH_URL=http://localhost:3000
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### ImageKit (Get from ImageKit dashboard)
+```env
+IMAGEKIT_PUBLIC_KEY=your-public-key
+IMAGEKIT_PRIVATE_KEY=your-private-key
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your-id
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Client-side
+NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=your-public-key
+NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your-id
+NEXT_PUBLIC_URL_ENDPOINT=https://ik.imagekit.io/your-id
+```
 
-## Learn More
+### Payments (Razorpay)
+```env
+RAZORPAY_KEY_ID=your-key-id
+RAZORPAY_SECRET_SECRET=your-secret
+NEXT_PUBLIC_RAZORPAY_KEY_ID=your-key-id
+RAZORPAY_WEBHOOK_SECRET=your-webhook-secret
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Email (Gmail)
+```env
+GMAIL_USER=your-gmail@gmail.com
+GMAIL_PASSWORD=your-app-password
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js 15 App Router
+│   ├── (authentications)/ # Auth pages (login, register, verify)
+│   ├── admin/             # Admin dashboard
+│   ├── api/               # API routes
+│   ├── orders/            # Order management
+│   ├── products/          # Product pages
+│   └── components/        # Page-specific components
+├── components/            # Reusable UI components
+│   ├── common/           # Shared components
+│   ├── providers/        # Context providers
+│   └── ui/              # UI components (loading, preloader)
+├── lib/                  # Utilities and configurations
+├── models/              # MongoDB models
+├── hooks/               # Custom React hooks
+└── utils/               # Helper functions
+```
 
-## Deploy on Vercel
+## 🛠️ Usage & Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### For Users
+- **Browse Products**: View image gallery on homepage
+- **Purchase Images**: Select variants and complete payment
+- **Download Images**: Access high-quality downloads after purchase
+- **Order History**: Track all your purchases
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### For Admins
+- **Product Management**: Add/edit products via `/admin`
+- **Order Monitoring**: View all orders and their status
+- **User Management**: Access user accounts and verification status
+
+### For Developers
+- **API Documentation**: RESTful API with comprehensive endpoints
+- **Database Models**: Well-structured MongoDB schemas
+- **Authentication Flow**: Complete auth implementation examples
+
+## 🔧 API Reference
+
+### Products
+- `GET /api/products` - List all products
+- `POST /api/products` - Create product (admin only)
+- `GET /api/products/[id]` - Get single product
+
+### Orders
+- `POST /api/orders` - Create new order
+- `GET /api/orders/user` - Get user's orders
+
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/verify/[token]` - Email verification
+- `POST /api/auth/request-verify` - Request new verification
+
+## 🔒 Security Features
+
+- **Protected Routes**: Middleware-based route protection
+- **Input Validation**: Comprehensive form validation
+- **CSRF Protection**: NextAuth.js built-in protection
+- **Secure Headers**: Production security headers
+- **Environment Secrets**: Secure environment variable handling
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+### Manual Deployment
+```bash
+npm run build
+npm start
+```
+
+## 🛠️ Development
+
+### Available Scripts
+```bash
+npm run dev          # Development server
+npm run build        # Production build
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript checking
+```
+
+### Database Setup
+1. Install MongoDB locally or use MongoDB Atlas
+2. Update `MONGODB_URI` in your environment
+3. The app will automatically connect and create collections
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Contribution Guidelines
+- Follow TypeScript best practices
+- Add tests for new features
+- Update documentation as needed
+- Follow the existing code style
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org) - React framework
+- [NextAuth.js](https://next-auth.js.org) - Authentication
+- [ImageKit](https://imagekit.io) - Image management
+- [Razorpay](https://razorpay.com) - Payment processing
+- [MongoDB](https://mongodb.com) - Database
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [Lucide React](https://lucide.dev) - Icons
+
+## 📞 Support
+
+For questions, issues, or support:
+- 📧 Open an issue on GitHub
+- 📖 Check the API documentation
+- 💬 Contact the development team
+
+---
+
+**⭐ If this project helped you, please give it a star!**
+
+## 🧑‍💻 Contributing
+
+Contributions are welcome! Please open issues or pull requests for improvements, bug fixes, or new features.
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org) - React framework
+- [NextAuth.js](https://next-auth.js.org) - Authentication
+- [ImageKit](https://imagekit.io) - Image management
+- [Razorpay](https://razorpay.com) - Payment processing
+- [MongoDB](https://mongodb.com) - Database
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [Lucide React](https://lucide.dev) - Icons
+
+## 👨‍💻 Developer
+
+**Developed by:** [Aryan Kumar](https://aryankumarofficial.tech)  
+**Contact:** [aryanak9163@gmail.com](mailto:aryanak9163@gmail.com)  
+**GitHub:** [@aryankumarofficial](https://github.com/aryankumarofficial)  
+**LinkedIn:** [Aryan Kumar](https://linkedin.com/in/aryankumarofficial)
+
+## 📞 Support
+
+For questions, issues, or support:
+- 📧 Open an issue on GitHub
+- 🌐 Try the [Live Demo](https://image-store-delta.vercel.app/)
+- 📖 Check the API documentation
+- 💬 Contact the developer directly
+
+---
+
+**⭐ If this project helped you, please give it a star!**
