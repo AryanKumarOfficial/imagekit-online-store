@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import Razorpay from "razorpay";
 import {NextRequest, NextResponse} from "next/server";
 import {withDatabase} from "@/lib/withDatabase";
@@ -22,8 +23,11 @@ async function handler(req: NextRequest) {
             })
         }
 
-        const {product_id, variant} = await req.json();
+        const body = await req.json();
+        const {product_id, variant} = body;
         if (!product_id || !variant) {
+
+            console.log("res", body)
             return NextResponse.json({
                 error: "Missing Required Fields"
             }, {
@@ -32,11 +36,11 @@ async function handler(req: NextRequest) {
         }
 
         const orderOptions = {
-            amount: variant.amount * 100,
+            amount: variant.price * 100,
             currency: "INR",
-            receipt: `receipt-${Date.now()}-${product_id}`,
+            receipt: `receipt-${product_id}`,
             notes: {
-                productId: product_id.toString(),
+                productId: product_id,
             }, // take it seriously for filter purpose
         }
 
@@ -48,7 +52,7 @@ async function handler(req: NextRequest) {
             productId: product_id,
             variant: variant,
             razorpayOrderId: order.id,
-            amount: Math.round(variant.amount * 100),
+            amount: Math.round(variant.price * 100),
             status: "pending",
         });
 
@@ -62,7 +66,7 @@ async function handler(req: NextRequest) {
         })
 
     } catch (err) {
-        console.error(err);
+        console.log(err);
         return NextResponse.json({
             error: "An error occurred",
         }, {

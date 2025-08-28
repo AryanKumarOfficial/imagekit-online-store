@@ -18,6 +18,7 @@ export default function Providers({children}: { children: React.ReactNode }) {
             }
 
             const data = await response.json();
+            console.log("kit data", data);
             const {signature, token, expire} = data;
             return {signature, token, expire};
         } catch (error: any) {

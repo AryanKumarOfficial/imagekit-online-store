@@ -34,7 +34,7 @@ export default function ProductPage() {
 
             try {
                 const data = await apiClient.getProduct(id.toString());
-                setProduct(data);
+                setProduct(data.product);
             } catch (err) {
                 console.error("Error fetching product:", err);
                 setError(err instanceof Error ? err.message : "Failed to load product");
@@ -61,14 +61,14 @@ export default function ProductPage() {
 
         try {
             const {orderId, amount} = await apiClient.createOrder({
-                productId: product._id,
-                Variant: variant,
+                product_id: product._id.toString(),
+                variant: variant,
             });
 
-            // if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-            //   showNotification("Razorpay key is missing", "error");
-            //   return;
-            // }
+            if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+              showNotification("Razorpay key is missing", "error");
+              return;
+            }
 
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -84,6 +84,7 @@ export default function ProductPage() {
                 prefill: {
                     email: session.user.email,
                 },
+
             };
 
             const rzp = new (window as any).Razorpay(options);

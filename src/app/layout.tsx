@@ -24,7 +24,7 @@ export default function RootLayout({
             className={`${inter.className} antialiased`}
         >
         <Script
-            src={"https://checkout.razorpay.com/vl/checkout.js"}
+            src={"https://checkout.razorpay.com/v1/checkout.js"}
             strategy={"lazyOnload"}
         />
         <Providers>

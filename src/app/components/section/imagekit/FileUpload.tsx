@@ -1,9 +1,9 @@
 "use client";
 
-import { IKUpload } from "imagekitio-next";
-import { IKUploadResponse } from "imagekitio-next/dist/types/components/IKUpload/props";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import {IKUpload} from "imagekitio-next";
+import {IKUploadResponse} from "imagekitio-next/dist/types/components/IKUpload/props";
+import {useState} from "react";
+import {Loader2} from "lucide-react";
 
 export default function FileUpload({
                                        onSuccessAction,
@@ -14,6 +14,7 @@ export default function FileUpload({
     const [error, setError] = useState<string | null>(null);
 
     const onError = (err: { message: string }) => {
+        console.log("error", err);
         setError(err.message);
         setUploading(false);
     };
@@ -55,7 +56,7 @@ export default function FileUpload({
 
             {uploading && (
                 <div className="flex items-center gap-2 text-sm text-primary">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin"/>
                     <span>Uploading...</span>
                 </div>
             )}

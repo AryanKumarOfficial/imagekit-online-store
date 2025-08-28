@@ -7,13 +7,22 @@ type FetchOptions = {
     body?: any,
     headers?: Record<string, string>,
     signal?: AbortSignal,
+    cache?: string,
+}
+
+interface ProductsResponse {
+    products: IProduct[];
+}
+
+interface ProductResponse {
+    product: IProduct;
 }
 
 export type ProductFormData = Omit<IProduct, "_id">
 
 export interface CreateOrderData {
-    productId: Types.ObjectId | string;
-    Variant: ImageVariant;
+    product_id: Types.ObjectId | string;
+    variant: ImageVariant;
 }
 
 export class HTTPError extends Error {
@@ -66,12 +75,12 @@ class ApiClient {
     }
 
     async getProducts(signal: AbortSignal) {
-        return this.fetch<IProduct[]>("/products", {signal});
+        return this.fetch<ProductsResponse>("/products", {signal, cache: "no-store"});
     }
 
     async getProduct(id: string) {
         const encodedId = encodeURIComponent(id);
-        return this.fetch<IProduct>(`/products/${encodedId}`);
+        return this.fetch<ProductResponse>(`/products/${encodedId}`, {cache: "no-store"});
     }
 
     async createProduct(data: IProduct) {
@@ -82,18 +91,15 @@ class ApiClient {
     }
 
     async getUserOrders() {
-        return this.fetch<IOrder[]>("/orders/user")
+
+        return this.fetch<IOrder[]>("/orders/user", {cache: "no-store",})
     }
 
     async createOrder(orderData: CreateOrderData) {
-        const sanitizedOrderData = {
-            ...orderData,
-            productId: orderData.productId.toString(),
-        }
-
         return this.fetch<{ orderId: string, amount: number }>("/orders", {
             method: "POST",
-            body: sanitizedOrderData,
+            body: orderData,
+            cache: "no-store",
         })
     }
 }

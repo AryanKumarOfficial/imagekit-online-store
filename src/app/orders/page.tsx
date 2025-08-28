@@ -40,7 +40,7 @@ export default function OrdersPage() {
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8">My Orders</h1>
             <div className="space-y-6">
-                {orders.map((order) => {
+                {orders.length > 0 && orders.map((order) => {
                     const variantDimensions =
                         IMAGE_VARIANTS[
                             order.variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS

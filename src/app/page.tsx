@@ -6,6 +6,8 @@ import {apiClient, HTTPError} from "@/lib/api-client";
 import ImageGallery from "@/app/components/section/products/ImageGallery";
 import {NotificationTypes, useNotification} from "./components/Notification"
 
+
+
 const Home = () => {
     const {showNotification} = useNotification();
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -16,7 +18,7 @@ const Home = () => {
             setLoading(true);
             try {
                 const data = await apiClient.getProducts(controller.signal);
-                setProducts(data);
+                setProducts(data.products);
             } catch (e: any) {
                 console.error("Error fetching products", e);
 
