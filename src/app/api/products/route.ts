@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic'
 import {withDatabase} from "@/lib/withDatabase";
 import {NextRequest, NextResponse} from "next/server";
 import Product, {IProduct} from "@/models/Product";
@@ -8,22 +7,15 @@ import {authOptions} from "@/lib/auth";
 const handler = async () => {
     try {
         const products = await Product.find().lean();
-        if (!products || products.length == 0) {
-            return NextResponse.json({
-                error: "No product found",
-            }, {
-                status: 400
-            })
-        }
         return NextResponse.json({
-            products,
+            products: products || [],
         }, {
             status: 200
         })
     } catch (e) {
         console.log(e);
         return NextResponse.json({
-            error: "An error occurred",
+            error: "An error occurred while fetching products",
         }, {
             status: 500
         })

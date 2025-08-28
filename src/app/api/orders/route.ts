@@ -25,9 +25,9 @@ async function handler(req: NextRequest) {
 
         const body = await req.json();
         const {product_id, variant} = body;
+        console.log("res", variant)
         if (!product_id || !variant) {
 
-            console.log("res", body)
             return NextResponse.json({
                 error: "Missing Required Fields"
             }, {
@@ -36,7 +36,7 @@ async function handler(req: NextRequest) {
         }
 
         const orderOptions = {
-            amount: variant.price * 100,
+            amount: Math.round(variant.price * 100),
             currency: "INR",
             receipt: `receipt-${product_id}`,
             notes: {
@@ -52,9 +52,11 @@ async function handler(req: NextRequest) {
             productId: product_id,
             variant: variant,
             razorpayOrderId: order.id,
-            amount: Math.round(variant.price),
+            amount: Math.round(variant.price * 100),
             status: "pending",
         });
+
+        console.log("order ccc", newOrder)
 
         return NextResponse.json({
             orderId: order.id,

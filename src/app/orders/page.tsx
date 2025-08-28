@@ -118,11 +118,11 @@ export default function OrdersPage() {
 
                                             <div className="text-right">
                                                 <p className="text-2xl font-bold mb-4">
-                                                    ${order.amount.toFixed(2)}
+                                                    ₹{(order.amount / 100).toFixed(2)}
                                                 </p>
                                                 {order.status === "completed" && (
                                                     <a
-                                                        href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
+                                                        href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center${product.imageUrl}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="btn btn-primary gap-2"

@@ -56,6 +56,7 @@ export default function ProductPage() {
 
         if (!product?._id) {
             showNotification("Invalid product", "error");
+
             return;
         }
 
@@ -216,7 +217,7 @@ export default function ProductPage() {
                                         </div>
                                         <div className="flex items-center gap-4">
                       <span className="text-xl font-bold">
-                        ${variant.price.toFixed(2)}
+                        ₹{variant.price.toFixed(2)}
                       </span>
                                             <button
                                                 className="btn btn-primary btn-sm"
