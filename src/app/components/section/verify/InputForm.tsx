@@ -43,7 +43,7 @@ const InputForm = () => {
                 setMessage({text: result.error || "Failed to send verification link.", type: "error"})
             } else
                 setMessage({text: result.message, type: "success"});
-        } catch (e) {
+        } catch (e: any) {
             console.log("Error requesting Verification: ", e);
             setMessage({text: e.message, type: "error"});
         } finally {

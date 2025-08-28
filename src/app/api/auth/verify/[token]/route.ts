@@ -9,11 +9,11 @@ interface RouteContext {
     params: Params
 }
 
-async function handler(request: NextRequest, {params}: RouteContext) {
+async function handler(_request: NextRequest, {params}: RouteContext) {
     try {
         const {token} = await params;
         if (!token) {
-            return NextResponse.json({message: "Email and Token not provided", success: false}, {status: 400});
+            return NextResponse.json({message: "Token not provided", success: false}, {status: 400});
         }
 
         const result: VerificationResult = await VerificationToken.verify(token);
@@ -24,7 +24,6 @@ async function handler(request: NextRequest, {params}: RouteContext) {
                     success: false
                 }, {status: 410})
             return NextResponse.json({message: "Invalid verification link", success: false}, {status: 400})
-
         }
         return NextResponse.json(
             {message: "User Verified Successfully", success: true},
@@ -33,7 +32,7 @@ async function handler(request: NextRequest, {params}: RouteContext) {
 
     } catch (e: any) {
         return NextResponse.json({
-            message: `Successfully verified account for ${result.email}.`,
+            message: `Error Verifying Account.`,
             error: e,
             success: false
         }, {status: 500});

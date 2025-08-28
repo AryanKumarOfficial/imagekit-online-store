@@ -16,7 +16,7 @@ export type VerificationResult =
 interface VerificationTokenModel extends mongoose.Model<IVerificationToken> {
     generate(identifier: string): Promise<IVerificationToken>;
 
-    verify(identifier: string, token: string): Promise<VerificationResult>
+    verify(token: string): Promise<VerificationResult>
 }
 
 const verificationTokenSchema = new mongoose.Schema<IVerificationToken>({

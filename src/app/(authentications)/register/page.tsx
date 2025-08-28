@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useNotification } from "../components/Notification";
+import React, {useState} from "react";
+import {useRouter} from "next/navigation";
+import {NotificationTypes, useNotification} from "../../components/Notification";
 import Link from "next/link";
 
 export default function Register() {
@@ -10,35 +10,35 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const router = useRouter();
-    const { showNotification } = useNotification();
+    const {showNotification} = useNotification();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            showNotification("Passwords do not match", "error");
+            showNotification("Passwords do not match", NotificationTypes.ERROR);
             return;
         }
 
         try {
             const res = await fetch("/api/auth/register", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email, password}),
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || "Registration failed");
+                showNotification(data.error || "Registration failed", NotificationTypes.ERROR);
             }
 
-            showNotification("Registration successful! Please log in.", "success");
+            showNotification("Registration successful! Please log in.", NotificationTypes.SUCCESS);
             router.push("/login");
         } catch (error) {
             showNotification(
                 error instanceof Error ? error.message : "Registration failed",
-                "error"
+                NotificationTypes.ERROR
             );
         }
     };

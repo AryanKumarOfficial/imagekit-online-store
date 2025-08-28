@@ -6,6 +6,7 @@ type FetchOptions = {
     method?: "GET" | "POST" | "PUT" | "DELETE",
     body?: any,
     headers?: Record<string, string>,
+    signal?: AbortSignal,
 }
 
 export type ProductFormData = Omit<IProduct, "_id">
@@ -15,7 +16,7 @@ export interface CreateOrderData {
     Variant: ImageVariant;
 }
 
-class HTTPError extends Error {
+export class HTTPError extends Error {
     response: Response;
     body: any;
 
@@ -28,8 +29,8 @@ class HTTPError extends Error {
 }
 
 class ApiClient {
-    private async fetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
-        const {method = "GET", body, headers = {}} = options;
+    private async fetch<T>(endpoint: string, options: FetchOptions = {},): Promise<T> {
+        const {method = "GET", body, headers = {}, signal} = options;
         const getCsrfToken = () => document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]
         const defaultHeaders: Record<string, string> = {
             "Content-Type": "application/json",
@@ -47,6 +48,7 @@ class ApiClient {
             method,
             headers: defaultHeaders,
             body: method !== "GET" ? JSON.stringify(body) : null,
+            signal
         })
 
         if (!response.ok) {
@@ -54,7 +56,7 @@ class ApiClient {
             try {
                 errBody = await response.json();
             } catch (e) {
-                 console.log(e)
+                console.log(e)
                 errBody = await response.text();
             }
             throw new HTTPError(response, errBody);
@@ -63,8 +65,8 @@ class ApiClient {
         return response.json()
     }
 
-    async getProducts() {
-        return this.fetch<IProduct[]>("/products");
+    async getProducts(signal: AbortSignal) {
+        return this.fetch<IProduct[]>("/products", {signal});
     }
 
     async getProduct(id: string) {
