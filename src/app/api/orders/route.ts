@@ -52,7 +52,7 @@ async function handler(req: NextRequest) {
             productId: product_id,
             variant: variant,
             razorpayOrderId: order.id,
-            amount: Math.round(variant.price * 100),
+            amount: Math.round(variant.price),
             status: "pending",
         });
 
