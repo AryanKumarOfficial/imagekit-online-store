@@ -1,23 +1,26 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useNotification } from "../../components/Notification";
+import {signIn} from "next-auth/react";
+import React, {useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useNotification} from "../../components/Notification";
 import Link from "next/link";
 
 export default function Login() {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
-    const { showNotification } = useNotification();
+    const {showNotification} = useNotification();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const result = await signIn("credentials", {
             email,
             password,
-            redirect: false,
+            redirect: true,
+            callbackUrl,
         });
 
         if (result?.error) {

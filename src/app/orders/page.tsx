@@ -17,7 +17,7 @@ export default function OrdersPage() {
         const fetchOrders = async () => {
             try {
                 const data = await apiClient.getUserOrders();
-                setOrders(data);
+                setOrders(data.orders);
             } catch (error) {
                 console.error("Error fetching orders:", error);
             } finally {
@@ -25,7 +25,7 @@ export default function OrdersPage() {
             }
         };
 
-        if (session) fetchOrders().then(r => console.log(r));
+        if (session) fetchOrders().then(r => console.log(r, "orders", orders));
     }, [session]);
 
     if (loading) {
@@ -64,7 +64,7 @@ export default function OrdersPage() {
                                         }}
                                     >
                                         <IKImage
-                                            urlEndpoint={process.env.NEXT_PUBLIC_URL_ENDPOINT}
+                                            urlEndpoint={process.env.NEXT_PUBLIC_URL_ENDPOINT!}
                                             path={product.imageUrl}
                                             alt={`Order ${order._id?.toString().slice(-6)}`}
                                             transformation={[

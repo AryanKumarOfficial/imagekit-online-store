@@ -18,6 +18,10 @@ interface ProductResponse {
     product: IProduct;
 }
 
+interface OrdersResponse {
+    orders:IOrder[];
+}
+
 export type ProductFormData = Omit<IProduct, "_id">
 
 export interface CreateOrderData {
@@ -92,7 +96,7 @@ class ApiClient {
 
     async getUserOrders() {
 
-        return this.fetch<IOrder[]>("/orders/user", {cache: "no-store",})
+        return this.fetch<OrdersResponse>("/orders/user", {cache: "no-store",})
     }
 
     async createOrder(orderData: CreateOrderData) {
