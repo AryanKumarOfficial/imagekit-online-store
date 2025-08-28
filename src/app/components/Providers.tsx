@@ -34,11 +34,7 @@ export default function Providers({children}: { children: React.ReactNode }) {
                     publicKey={publicKey}
                     authenticator={authenticator}
                 >
-                    {/*<ThemeProvider>*/}
-                    {/*    <PreloaderProvider>*/}
                     {children}
-                    {/*</PreloaderProvider>*/}
-                    {/*</ThemeProvider>*/}
                 </ImageKitProvider>
             </NotificationProvider>
         </SessionProvider>
