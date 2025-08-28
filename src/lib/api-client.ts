@@ -15,23 +15,49 @@ export interface CreateOrderData {
     Variant: ImageVariant;
 }
 
+class HTTPError extends Error {
+    response: Response;
+    body: any;
+
+    constructor(response: Response, body: any) {
+        super(`HTTP Error: ${response.status} ${response.statusText}`);
+        this.name = "HTTPError";
+        this.response = response;
+        this.body = body;
+    }
+}
+
 class ApiClient {
     private async fetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
         const {method = "GET", body, headers = {}} = options;
-
-        const defaultHeaders = {
+        const getCsrfToken = () => document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]
+        const defaultHeaders: Record<string, string> = {
             "Content-Type": "application/json",
             ...headers,
+        }
+
+        if (method !== "GET") {
+            const token = getCsrfToken();
+            if (token) {
+                defaultHeaders["X-CSRF-Token"] = token
+            }
         }
 
         const response = await fetch(`/api${endpoint}`, {
             method,
             headers: defaultHeaders,
-            body: JSON.stringify(body),
+            body: method !== "GET" ? JSON.stringify(body) : null,
         })
 
         if (!response.ok) {
-            throw new Error(response.statusText)
+            let errBody;
+            try {
+                errBody = await response.json();
+            } catch (e) {
+                 console.log(e)
+                errBody = await response.text();
+            }
+            throw new HTTPError(response, errBody);
         }
 
         return response.json()
@@ -42,7 +68,8 @@ class ApiClient {
     }
 
     async getProduct(id: string) {
-        return this.fetch<IProduct>(`/products/${id}`);
+        const encodedId = encodeURIComponent(id);
+        return this.fetch<IProduct>(`/products/${encodedId}`);
     }
 
     async createProduct(data: IProduct) {
@@ -56,13 +83,13 @@ class ApiClient {
         return this.fetch<IOrder[]>("/orders/user")
     }
 
-    async createOrder(orderData:CreateOrderData){
+    async createOrder(orderData: CreateOrderData) {
         const sanitizedOrderData = {
             ...orderData,
             productId: orderData.productId.toString(),
         }
 
-        return this.fetch<{orderId:string,amount:number}>("/orders", {
+        return this.fetch<{ orderId: string, amount: number }>("/orders", {
             method: "POST",
             body: sanitizedOrderData,
         })
