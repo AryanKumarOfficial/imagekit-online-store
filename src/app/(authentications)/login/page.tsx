@@ -3,31 +3,41 @@
 import {signIn} from "next-auth/react";
 import React, {useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
-import {useNotification} from "../../components/Notification";
+import {NotificationTypes, useNotification} from "../../components/Notification";
 import Link from "next/link";
+import {Loader2} from "lucide-react";
 
 export default function Login() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const {showNotification} = useNotification();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: true,
-            callbackUrl,
-        });
+        setLoading(true);
+        try {
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: true,
+                callbackUrl,
+            });
 
-        if (result?.error) {
-            showNotification(result.error, "error");
-        } else {
-            showNotification("Login successful!", "success");
-            router.push("/");
+            if (result?.error) {
+                showNotification(result.error, "error");
+            } else {
+                showNotification("Login successful!", NotificationTypes.SUCCESS);
+                router.push("/");
+            }
+        } catch (e) {
+            console.log("error", e);
+            showNotification("Failed to login", NotificationTypes.ERROR);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -63,8 +73,12 @@ export default function Login() {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 relative"
                 >
+                    {loading && (
+                        <Loader2 className="w-4 h-4 animate-spin absolute left-[40%] top-1/3"
+                        />)
+                    }
                     Login
                 </button>
                 <p className="text-center mt-4">
