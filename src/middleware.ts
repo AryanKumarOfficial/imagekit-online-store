@@ -1,8 +1,20 @@
-import {withAuth} from "next-auth/middleware";
+import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
 import {NextResponse} from "next/server";
 
 export default withAuth(
-    function middleware() {
+    function middleware(req: NextRequestWithAuth) {
+        const {token} = req.nextauth;
+        const {pathname} = req.nextUrl;
+        const isLoggedIn = !!token;
+        if (isLoggedIn && (pathname === "/login" || pathname === "/register")) {
+            const referer = req.headers.get("referer");
+            const homeUrl = new URL("/", req.nextUrl.origin)
+
+            if (referer && new URL(referer).origin === new URL(req.url).origin) {
+                return NextResponse.redirect(new URL(referer));
+            }
+            return NextResponse.redirect(homeUrl);
+        }
         return NextResponse.next();
     },
     {
@@ -37,6 +49,7 @@ export default withAuth(
                 if (pathname.startsWith("/admin")) {
                     return token?.role === "admin";
                 }
+
 
                 // all other paths require authentication
                 return !!token;

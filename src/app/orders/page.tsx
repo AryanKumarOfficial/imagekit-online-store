@@ -3,27 +3,32 @@
 import {useEffect, useState} from "react";
 import {useSession} from "next-auth/react";
 import {IOrder} from "@/models/Order";
-import {Download, Loader2} from "lucide-react";
 import {IKImage} from "imagekitio-next";
 import {IMAGE_VARIANTS} from "@/models/Product";
 import {apiClient} from "@/lib/api-client";
+import {Download, Loader2, LucideBadgeIndianRupee} from "lucide-react";
+import {NotificationTypes, useNotification} from "@/app/components/Notification";
+import {useRouter} from "next/navigation";
+import mongoose from "mongoose"
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<IOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const {data: session} = useSession();
+    const {showNotification} = useNotification();
+    const router = useRouter();
 
+    const fetchOrders = async () => {
+        try {
+            const data = await apiClient.getUserOrders();
+            setOrders(data.orders);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const data = await apiClient.getUserOrders();
-                setOrders(data.orders);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
         if (session) fetchOrders().then(r => console.log(r, "orders", orders));
     }, [session]);
@@ -34,6 +39,47 @@ export default function OrdersPage() {
                 <Loader2 className="w-12 h-12 animate-spin text-primary"/>
             </div>
         );
+    }
+
+    const handleRepay = async (order: IOrder) => {
+        try {
+            if (order.productId instanceof mongoose.Types.ObjectId) {
+                showNotification("Product details not found. Cannot proceed with payment.", NotificationTypes.WARNING)
+                throw new Error("Product details not found. Cannot proceed with payment.");
+            }
+
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+                amount: Math.round(order.amount),
+                currency: "INR",
+                name: "ImageKit Shop",
+                description: `${order.productId.name} - ${order.variant.type} Version`,
+                order_id: order.razorpayOrderId,
+                handler: async function () {
+                    showNotification("Payment successful!", NotificationTypes.SUCCESS)
+                    router.push("/orders");
+                    await fetchOrders();
+                },
+                prefill: {
+                    email: session?.user?.email
+                },
+                theme: {
+                    color: "#3399cc",
+                    backdrop_color: "#f4f4f4"
+                },
+            }
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.open();
+
+        } catch
+            (error) {
+            console.error(error);
+            showNotification(
+                error instanceof Error ? error.message : "Payment failed",
+                NotificationTypes.ERROR
+            );
+        }
     }
 
     return (
@@ -120,7 +166,7 @@ export default function OrdersPage() {
                                                 <p className="text-2xl font-bold mb-4">
                                                     ₹{(order.amount / 100).toFixed(2)}
                                                 </p>
-                                                {order.status === "completed" && (
+                                                {order.status === "completed" ? (
                                                     <a
                                                         href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center${product.imageUrl}`}
                                                         target="_blank"
@@ -133,6 +179,14 @@ export default function OrdersPage() {
                                                         <Download className="w-4 h-4"/>
                                                         Download High Quality
                                                     </a>
+                                                ) : (
+                                                    <button
+                                                        className="btn btn-primary gap-2"
+                                                        onClick={() => handleRepay(order)}
+                                                    >
+                                                        <LucideBadgeIndianRupee className="w-6 h-6"/>
+                                                        Pay to Download
+                                                    </button>
                                                 )}
                                             </div>
                                         </div>
