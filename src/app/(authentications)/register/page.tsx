@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import {useRouter} from "next/navigation";
 import {NotificationTypes, useNotification} from "../../components/Notification";
 import Link from "next/link";
+import {Loader2} from "lucide-react";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const router = useRouter();
     const {showNotification} = useNotification();
-
+    const [loading, setLoading] = useState(false);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -19,7 +20,7 @@ export default function Register() {
             showNotification("Passwords do not match", NotificationTypes.ERROR);
             return;
         }
-
+        setLoading(true);
         try {
             const res = await fetch("/api/auth/register", {
                 method: "POST",
@@ -40,6 +41,8 @@ export default function Register() {
                 error instanceof Error ? error.message : "Registration failed",
                 NotificationTypes.ERROR
             );
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -90,6 +93,10 @@ export default function Register() {
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                 >
+                    {loading && (
+                        <Loader2 className="w-4 h-4 animate-spin absolute left-[40%] top-1/3"
+                        />)
+                    }
                     Register
                 </button>
                 <p className="text-center mt-4">

@@ -23,15 +23,14 @@ export default function Login() {
             const result = await signIn("credentials", {
                 email,
                 password,
-                redirect: true,
-                callbackUrl,
+                redirect: false,
             });
 
             if (result?.error) {
                 showNotification(result.error, "error");
             } else {
                 showNotification("Login successful!", NotificationTypes.SUCCESS);
-                router.push("/");
+                router.push(callbackUrl);
             }
         } catch (e) {
             console.log("error", e);
