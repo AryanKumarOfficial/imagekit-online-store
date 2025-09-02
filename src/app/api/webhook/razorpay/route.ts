@@ -1,7 +1,9 @@
+// razorpay webhook
+
 import {NextRequest, NextResponse} from "next/server";
 import {withDatabase} from "@/lib/withDatabase";
 import crypto from "crypto";
-import Order from "@/models/Order";
+import Order, {OrderStatus} from "@/models/Order";
 import {transporter} from "@/utils/mails/setup";
 
 async function handler(request: NextRequest) {
@@ -25,62 +27,81 @@ async function handler(request: NextRequest) {
         console.log("Events: ", event)
         if (event.event === "payment.captured") {
             const payment = event.payload.payment.entity;
-            const order = await Order.findOneAndUpdate({
-                razorpayOrderId: payment.order_id,
-            }, {
-                razorpayPaymentId: payment.id,
-                status: "completed"
-            })
-                .populate([
-                    {path: "productId", select: "name"},
-                    {path: "userId", select: "email"}
-                ])
-
-            if (order) {
-                await transporter.verify();
-                await transporter.sendMail({
-                    from: `Imagekit Responder<${process.env.GMAIL_USER}>`,
-                    to: order.userId.email,
-                    subject: "Oder Completed",
-                    text: `Your order ${order.productId.name} has been successfully placed!`
+            try {
+                const order = await Order.findOneAndUpdate({
+                    razorpayOrderId: payment.order_id,
+                }, {
+                    razorpayPaymentId: payment.id,
+                    status: OrderStatus.COMPLETED
                 })
+                    .populate([
+                        {path: "productId", select: "name", model: "Product"},
+                        {path: "userId", select: "email", model: "User"}
+                    ])
+
+                if (order && order.productId && order.userId) {
+                    await transporter.verify();
+                    await transporter.sendMail({
+                        from: `Imagekit Responder<${process.env.GMAIL_USER}>`,
+                        to: order.userId.email,
+                        subject: "Oder Completed",
+                        text: `Your order ${order.productId.name} has been successfully placed!`
+                    })
+                }
+            } catch (e) {
+                console.error("Populate Error: ", e);
+                await Order.findOneAndUpdate(
+                    {razorpayOrderId: payment.order_id},
+                    {razorpayPaymentId: payment.id, status: OrderStatus.COMPLETED}
+                )
             }
         }
 
         if (event.event === "payment.failed") {
             const payment = event.payload.payment.entity;
-            const order = await Order.findOneAndUpdate({
-                razorpayOrderId: payment.order_id,
-            }, {
-                razorpayPaymentId: payment.id,
-                status: "failed"
-            })
-                .populate([
-                    {path: "productId", select: "name"},
-                    {path: "userId", select: "email"}
-                ])
-
-            if (order) {
-                await transporter.verify();
-                await transporter.sendMail({
-                    from: `Imagekit Responder<${process.env.GMAIL_USER}>`,
-                    to: order.userId.email,
-                    subject: "Oder Failed",
-                    text: `Your order ${order.productId.name} has been failed!`
+            try {
+                const order = await Order.findOneAndUpdate({
+                    razorpayOrderId: payment.order_id,
+                }, {
+                    razorpayPaymentId: payment.id,
+                    status: OrderStatus.FAILED
                 })
+                    .populate([
+                        {path: "productId", select: "name", model: "Product"},
+                        {path: "userId", select: "email", model: "User"}
+                    ])
+
+                if (order) {
+                    await transporter.verify();
+                    await transporter.sendMail({
+                        from: `Imagekit Responder<${process.env.GMAIL_USER}>`,
+                        to: order.userId.email,
+                        subject: "Oder Failed",
+                        text: `Your order ${order.productId.name} has been failed!`
+                    })
+                }
+            } catch (e) {
+                console.error("Populate Error: ", e);
+                await Order.findOneAndUpdate(
+                    {razorpayOrderId: payment.order_id}, {
+                        razorpayPaymentId: payment.id,
+                        status: OrderStatus.FAILED
+                    }
+                )
             }
         }
 
         return NextResponse.json({
-            message: "Success"
+            message: "Processed"
         }, {status: 200})
 
     } catch (e) {
-        console.error(e)
+        console.error("Critical webhook error:", e)
+
         return NextResponse.json({
-            error: "An error occurred"
+            message: "Processed with An Error"
         }, {
-            status: 500
+            status: 200
         })
     }
 }

@@ -1,3 +1,4 @@
+// Order Modal
 import mongoose, {model, models, Schema} from "mongoose";
 import {ImageVariant, ImageVariantType} from "./Product";
 
@@ -12,6 +13,12 @@ interface PopulatedProduct {
     imageUrl: string;
 }
 
+export enum OrderStatus {
+    PENDING = "pending",
+    COMPLETED = "completed",
+    FAILED = "failed"
+}
+
 export interface IOrder {
     _id?: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId | PopulatedUser;
@@ -20,7 +27,7 @@ export interface IOrder {
     razorpayOrderId: string;
     razorpayPaymentId?: string;
     amount: number;
-    status: "pending" | "completed" | "failed";
+    status: OrderStatus;
     downloadUrl?: string;
     previewUrl?: string;
     createdAt?: Date;
@@ -51,8 +58,8 @@ const orderSchema = new Schema<IOrder>(
         status: {
             type: String,
             required: true,
-            enum: ["pending", "completed", "failed"],
-            default: "pending",
+            enum: Object.values(OrderStatus),
+            default: OrderStatus.PENDING,
         },
         downloadUrl: {type: String},
         previewUrl: {type: String},

@@ -1,3 +1,5 @@
+// /api/orders - CREATE ORDER
+
 export const dynamic = 'force-dynamic'
 import Razorpay from "razorpay";
 import {NextRequest, NextResponse} from "next/server";
