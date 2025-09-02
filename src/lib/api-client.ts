@@ -19,7 +19,7 @@ interface ProductResponse {
 }
 
 interface OrdersResponse {
-    orders:IOrder[];
+    orders: IOrder[];
 }
 
 export type ProductFormData = Omit<IProduct, "_id">
@@ -105,6 +105,10 @@ class ApiClient {
             body: orderData,
             cache: "no-store",
         })
+    }
+
+    async refreshOrderById(id: string) {
+        return this.fetch(`/orders/refresh/${id}`, {cache: "no-store"})
     }
 }
 

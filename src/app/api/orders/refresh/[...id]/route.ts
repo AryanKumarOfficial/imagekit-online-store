@@ -19,15 +19,16 @@ async function handler(_req: NextRequest, {params}: handlerParams) {
             status: 400
         });
 
-        const res = await razorpay.orders.fetch(id);
-        // if (res.statusCode !== 200) {
-        //     return NextResponse.json({
-        //         error: res.error.description,
-        //     })
-        // }
 
-        const pays = (await razorpay.payments.all()).items;
-        const payObj = pays.filter((p) => p.order_id === id.toString());
+        const pays = (await razorpay.orders.fetchPayments(id.toString())).items
+
+        const payObj = pays.reduce((newest, current) => current.created_at > newest.created_at ? current : newest)
+        pays.reduce((a, b) => b.created_at > a.created_at ? a : b)
+
+        if (!payObj) {
+            return NextResponse.json({error: "No such id"}, {status: 400})
+        }
+
         if (payObj.status === "captured") {
             try {
                 await Order.findOneAndUpdate({
@@ -71,11 +72,14 @@ async function handler(_req: NextRequest, {params}: handlerParams) {
             }
         }
 
-        console.log(res);
-        return NextResponse.json({res, pays}, {status: 200});
+        return NextResponse.json({message: "Refreshed successfully!", success: true, pays}, {status: 200});
     } catch (e) {
         console.error("Error fetching order", e);
-        return NextResponse.json({code: e.error.code, error: e.error.description}, {status: e.statusCode});
+        return NextResponse.json({
+            code: e.statusCode,
+            error: e.error || "Failed to refresh ",
+            success: false
+        }, {status: e.statusCode});
     }
 }
 

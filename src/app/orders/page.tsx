@@ -6,7 +6,7 @@ import {IOrder} from "@/models/Order";
 import {IKImage} from "imagekitio-next";
 import {IMAGE_VARIANTS} from "@/models/Product";
 import {apiClient} from "@/lib/api-client";
-import {Download, Loader2, LucideBadgeIndianRupee} from "lucide-react";
+import {Download, Loader2, LucideBadgeIndianRupee, RefreshCw} from "lucide-react";
 import {NotificationTypes, useNotification} from "@/app/components/Notification";
 import {useRouter} from "next/navigation";
 import mongoose from "mongoose"
@@ -28,6 +28,18 @@ export default function OrdersPage() {
             setLoading(false);
         }
     };
+
+    const refreshOrder = async (id: string) => {
+        try {
+            const data = await apiClient.refreshOrderById(id);
+            showNotification(data.message, NotificationTypes.SUCCESS);
+            router.refresh();
+        } catch (error) {
+            console.error("Error refreshing order:", error);
+            showNotification("Error refreshing order", NotificationTypes.ERROR);
+        }
+    }
+
     useEffect(() => {
 
         if (session) fetchOrders().then(r => console.log(r, "orders", orders));
@@ -180,13 +192,22 @@ export default function OrdersPage() {
                                                         Download High Quality
                                                     </a>
                                                 ) : (
-                                                    <button
-                                                        className="btn btn-primary gap-2"
-                                                        onClick={() => handleRepay(order)}
-                                                    >
-                                                        <LucideBadgeIndianRupee className="w-6 h-6"/>
-                                                        Pay to Download
-                                                    </button>
+                                                    <div className={"flex flex-row gap-10"}>
+                                                        <button
+                                                            className="btn btn-primary gap-2"
+                                                            onClick={() => handleRepay(order)}
+                                                        >
+                                                            <LucideBadgeIndianRupee className="w-6 h-6"/>
+                                                            Pay to Download
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-primary gap-2"
+                                                            onClick={() => refreshOrder(order.razorpayOrderId)}
+                                                        >
+                                                            <RefreshCw className="w-6 h-6"/>
+                                                            Refresh
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -194,7 +215,8 @@ export default function OrdersPage() {
                                 </div>
                             </div>
                         </div>
-                    );
+                    )
+                        ;
                 })}
 
                 {orders.length === 0 && (
