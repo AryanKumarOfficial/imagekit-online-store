@@ -73,7 +73,7 @@ async function handler(_req: NextRequest, {params}: handlerParams) {
         }
 
         return NextResponse.json({message: "Refreshed successfully!", success: true, pays}, {status: 200});
-    } catch (e) {
+    } catch (e: any) {
         console.error("Error fetching order", e);
         return NextResponse.json({
             code: e.statusCode,

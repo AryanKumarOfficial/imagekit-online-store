@@ -31,7 +31,7 @@ export default function OrdersPage() {
 
     const refreshOrder = async (id: string) => {
         try {
-            const data = await apiClient.refreshOrderById(id);
+            const data: any = await apiClient.refreshOrderById(id);
             showNotification(data.message, NotificationTypes.SUCCESS);
             router.refresh();
         } catch (error) {
