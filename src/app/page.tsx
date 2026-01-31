@@ -40,13 +40,23 @@ const Home = () => {
     }, [showNotification]);
 
     if (loading) {
-        return <p className="text-center mt-8">Loading products...</p>
+        return (
+            <main className="container mx-auto px-4 py-12 max-w-7xl">
+                <div className="flex justify-center items-center h-96">
+                    <span className="loading loading-spinner loading-lg"></span>
+                </div>
+            </main>
+        )
     }
 
     return (
-        <main className={"container mx-auto px-4 py-8"}>
-
-            <h1 className={"text-4xl font-bold mb-8"}>ImageKit Shop</h1>
+        <main className="container mx-auto px-4 py-12 max-w-7xl">
+            <div className="mb-12">
+                <h1 className="text-5xl font-extrabold mb-4">ImageKit Shop</h1>
+                <p className="text-xl text-base-content/70">
+                    High-quality products delivered with optimized images
+                </p>
+            </div>
             <ImageGallery products={products}/>
         </main>
     )

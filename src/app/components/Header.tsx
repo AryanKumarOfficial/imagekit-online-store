@@ -48,9 +48,14 @@ export default function Header() {
                                 {session ? (
                                     <>
                                         <li className="px-4 py-1">
-                      <span className="text-sm opacity-70">
-                        {session.user?.email?.split("@")[0]}
-                      </span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm opacity-70">
+                                                    {session.user?.email?.split("@")[0]}
+                                                </span>
+                                                {session.user?.role === "admin" && (
+                                                    <span className="badge badge-primary badge-sm">Admin</span>
+                                                )}
+                                            </div>
                                         </li>
                                         <div className="divider my-1"></div>
                                         {session.user?.role === "admin" && (
