@@ -10,7 +10,7 @@ export default function ProductCard({ product, priority = false }: { product: IP
     );
 
     return (
-        <div className="card bg-base-100 shadow hover:shadow-lg transition-all duration-300">
+        <div className="card bg-base-100 shadow hover:shadow-lg transition-all duration-300 h-full border border-base-200">
             <figure className="relative px-4 pt-4">
                 <Link
                     href={`/products/${product._id}`}
@@ -37,6 +37,7 @@ export default function ProductCard({ product, priority = false }: { product: IP
                                     quality: 80,
                                 },
                             ]}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                     </div>
@@ -44,19 +45,19 @@ export default function ProductCard({ product, priority = false }: { product: IP
                 </Link>
             </figure>
 
-            <div className="card-body p-4">
+            <div className="card-body p-4 flex-grow">
                 <Link
                     href={`/products/${product._id}`}
                     className="hover:opacity-80 transition-opacity"
                 >
-                    <h2 className="card-title text-lg">{product.name}</h2>
+                    <h2 className="card-title text-lg line-clamp-1" title={product.name}>{product.name}</h2>
                 </Link>
 
-                <p className="text-sm text-base-content/70 line-clamp-2 min-h-[2.5rem]">
+                <p className="text-sm text-base-content/70 line-clamp-2 min-h-[2.5rem]" title={product.description}>
                     {product.description}
                 </p>
 
-                <div className="card-actions justify-between items-center mt-2">
+                <div className="card-actions justify-between items-center mt-auto">
                     <div className="flex flex-col">
             <span className="text-lg font-bold">
               From ₹{lowestPrice.toFixed(2)}
