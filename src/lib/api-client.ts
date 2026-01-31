@@ -7,7 +7,7 @@ type FetchOptions = {
     body?: any,
     headers?: Record<string, string>,
     signal?: AbortSignal,
-    cache?: string,
+    cache?: RequestCache,
 }
 
 interface ProductsResponse {
@@ -43,15 +43,15 @@ export class HTTPError extends Error {
 
 class ApiClient {
     private async fetch<T>(endpoint: string, options: FetchOptions = {},): Promise<T> {
-        const {method = "GET", body, headers = {}, signal} = options;
-        const getCsrfToken = () => document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]
+        const {method = "GET", body, headers = {}, signal, cache} = options;
+
         const defaultHeaders: Record<string, string> = {
             "Content-Type": "application/json",
             ...headers,
         }
 
-        if (method !== "GET") {
-            const token = getCsrfToken();
+        if (method !== "GET" && typeof document !== "undefined") {
+            const token = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
             if (token) {
                 defaultHeaders["X-CSRF-Token"] = token
             }
@@ -61,7 +61,8 @@ class ApiClient {
             method,
             headers: defaultHeaders,
             body: method !== "GET" ? JSON.stringify(body) : null,
-            signal
+            signal,
+            cache
         })
 
         if (!response.ok) {

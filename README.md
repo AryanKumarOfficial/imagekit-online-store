@@ -117,6 +117,15 @@ GMAIL_USER=your-gmail@gmail.com
 GMAIL_PASSWORD=your-app-password
 ```
 
+## 🛠️ Admin Auto-Creation
+
+On the first server start (or database connection), the application will check for an existing admin user.
+- **If no admin exists:**
+  - A new admin user will be created.
+  - A secure random password will be generated.
+  - Credentials will be emailed to `aryanak9163@gmail.com` using the configured Gmail credentials.
+  - **Important:** Ensure `GMAIL_USER` and `GMAIL_PASSWORD` are correctly set up to receive this email.
+
 ## 📁 Project Structure
 
 ```
@@ -250,39 +259,9 @@ For questions, issues, or support:
 
 **⭐ If this project helped you, please give it a star!**
 
-## 🧑‍💻 Contributing
-
-Contributions are welcome! Please open issues or pull requests for improvements, bug fixes, or new features.
-
-## 📄 License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org) - React framework
-- [NextAuth.js](https://next-auth.js.org) - Authentication
-- [ImageKit](https://imagekit.io) - Image management
-- [Razorpay](https://razorpay.com) - Payment processing
-- [MongoDB](https://mongodb.com) - Database
-- [Tailwind CSS](https://tailwindcss.com) - Styling
-- [Lucide React](https://lucide.dev) - Icons
-
 ## 👨‍💻 Developer
 
 **Developed by:** [Aryan Kumar](https://aryankumarofficial.tech)  
 **Contact:** [aryanak9163@gmail.com](mailto:aryanak9163@gmail.com)  
 **GitHub:** [@aryankumarofficial](https://github.com/aryankumarofficial)  
 **LinkedIn:** [Aryan Kumar](https://linkedin.com/in/aryankumarofficial)
-
-## 📞 Support
-
-For questions, issues, or support:
-- 📧 Open an issue on GitHub
-- 🌐 Try the [Live Demo](https://image-store-delta.vercel.app/)
-- 📖 Check the API documentation
-- 💬 Contact the developer directly
-
----
-
-**⭐ If this project helped you, please give it a star!**

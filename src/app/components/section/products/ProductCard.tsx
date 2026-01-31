@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IProduct, IMAGE_VARIANTS } from "@/models/Product";
 import { Eye } from "lucide-react";
 
-export default function ProductCard({ product }: { product: IProduct }) {
+export default function ProductCard({ product, priority = false }: { product: IProduct; priority?: boolean }) {
     const lowestPrice = product.variants.reduce(
         (min, variant) => (variant.price < min ? variant.price : min),
         product.variants[0]?.price || 0
@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: IProduct }) {
                         <IKImage
                             path={product.imageUrl}
                             alt={product.name}
-                            loading="eager"
+                            loading={priority ? "eager" : "lazy"}
                             transformation={[
                                 {
                                     height: IMAGE_VARIANTS.SQUARE.dimensions.height.toString(),

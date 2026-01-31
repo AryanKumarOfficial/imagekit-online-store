@@ -3,6 +3,18 @@ import {NextRequest, NextResponse} from "next/server";
 import Product, {IProduct} from "@/models/Product";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
+import {z} from "zod";
+
+const productSchema = z.object({
+    name: z.string().min(1),
+    description: z.string().min(1),
+    imageUrl: z.string().url(),
+    variants: z.array(z.object({
+        type: z.enum(["SQUARE", "WIDE", "PORTRAIT"]),
+        price: z.number().positive(),
+        license: z.enum(["personal", "commercial"])
+    })).min(1),
+});
 
 const handler = async () => {
     try {
@@ -32,20 +44,19 @@ const postHandler = async (request: NextRequest) => {
                 status: 401
             })
         }
-        const body: IProduct = await request.json();
-        if (
-            !body.name ||
-            !body.description ||
-            body.variants.length === 0 ||
-            !body.imageUrl
-        ) {
-            return NextResponse.json({
-                error: "All fields are required",
+        const body = await request.json();
+        const validation = productSchema.safeParse(body);
+
+        if (!validation.success) {
+             return NextResponse.json({
+                error: "Invalid fields",
+                details: validation.error.issues,
             }, {
                 status: 400,
             })
         }
-        const newProduct: IProduct = await Product.create(body);
+
+        const newProduct: IProduct = await Product.create(validation.data);
         return NextResponse.json({
             newProduct,
         }, {

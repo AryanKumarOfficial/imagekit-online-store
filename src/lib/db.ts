@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {ensureAdminUser} from "@/lib/admin-setup";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -12,6 +13,8 @@ let cached = global.mongoose;
 if (!cached) {
     cached = global.mongoose = {conn: null, promise: null};
 }
+
+let isAdminChecked = false;
 
 export async function connectToDatabase() {
     if (cached.conn) {
@@ -36,6 +39,16 @@ export async function connectToDatabase() {
 
         cached.promise = null;
     }
+
+    if (cached.conn && !isAdminChecked) {
+        try {
+            await ensureAdminUser();
+            isAdminChecked = true;
+        } catch (e) {
+            console.error("Failed to ensure admin user:", e);
+        }
+    }
+
     return cached.conn;
 }
 

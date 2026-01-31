@@ -37,7 +37,7 @@ const Home = () => {
             controller.abort()
         }
 
-    }, []);
+    }, [showNotification]);
 
     if (loading) {
         return <p className="text-center mt-8">Loading products...</p>
