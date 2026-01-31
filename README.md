@@ -26,6 +26,7 @@ Experience the full functionality of the ImageKit Online Store with our live dem
 - **Product Management**: Full CRUD operations for digital images
 - **Multiple Image Variants**: Square, Wide, Portrait formats with different licenses
 - **Razorpay Integration**: Secure payment processing with webhooks
+- **Compliance & Legal**: Fully compliant with Razorpay merchant requirements including Terms, Privacy, and Refund policies
 - **Order Management**: Complete order tracking and status updates
 - **Download System**: High-quality image downloads for completed orders
 

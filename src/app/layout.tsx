@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import Providers from "@/app/components/Providers";
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 import React from "react";
 
 const inter = Inter({subsets: ["latin"]});
@@ -21,7 +22,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
         <body
-            className={`${inter.className} antialiased`}
+            className={`${inter.className} antialiased min-h-screen flex flex-col`}
         >
         <Script
             src={"https://checkout.razorpay.com/v1/checkout.js"}
@@ -29,9 +30,10 @@ export default function RootLayout({
         />
         <Providers>
             <Header/>
-            <main className={"container mx-auto px-4 py-8"}>
+            <main className={"container mx-auto px-4 py-8 flex-grow"}>
                 {children}
             </main>
+            <Footer/>
         </Providers>
         </body>
         </html>
