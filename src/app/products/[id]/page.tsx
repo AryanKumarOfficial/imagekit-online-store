@@ -223,10 +223,7 @@ export default function ProductPage() {
                                                 className="btn btn-primary btn-sm"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handlePurchase(variant)
-                                                        .then((response) => {
-                                                            console.log(response);
-                                                        });
+                                                    handlePurchase(variant);
                                                 }}
                                             >
                                                 Buy Now

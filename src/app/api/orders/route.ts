@@ -7,12 +7,22 @@ import {withDatabase} from "@/lib/withDatabase";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
 import Order from "@/models/Order";
+import {z} from "zod";
 
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID!,
     key_secret: process.env.RAZORPAY_SECRET_SECRET!,
 })
+
+const orderSchema = z.object({
+    product_id: z.string().min(1),
+    variant: z.object({
+        type: z.enum(["SQUARE", "WIDE", "PORTRAIT"]),
+        price: z.number().positive(),
+        license: z.enum(["personal", "commercial"])
+    })
+});
 
 async function handler(req: NextRequest) {
     try {
@@ -26,16 +36,18 @@ async function handler(req: NextRequest) {
         }
 
         const body = await req.json();
-        const {product_id, variant} = body;
-        console.log("res", variant)
-        if (!product_id || !variant) {
+        const validation = orderSchema.safeParse(body);
 
-            return NextResponse.json({
-                error: "Missing Required Fields"
+        if (!validation.success) {
+             return NextResponse.json({
+                error: "Invalid fields",
+                details: validation.error.issues
             }, {
                 status: 400
             })
         }
+
+        const {product_id, variant} = validation.data;
 
         const orderOptions = {
             amount: Math.round(variant.price * 100),
