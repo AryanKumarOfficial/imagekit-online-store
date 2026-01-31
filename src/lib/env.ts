@@ -3,7 +3,7 @@ import { z } from "zod";
 const envSchema = z.object({
   MONGODB_URI: z.string().url(),
   NEXTAUTH_SECRET: z.string().min(1),
-  NEXTAUTH_URL: z.string().url(),
+  NEXTAUTH_URL: z.string().url().optional(),
   IMAGEKIT_PUBLIC_KEY: z.string().min(1),
   IMAGEKIT_PRIVATE_KEY: z.string().min(1),
   IMAGEKIT_URL_ENDPOINT: z.string().url(),

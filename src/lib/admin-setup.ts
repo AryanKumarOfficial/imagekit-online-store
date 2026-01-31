@@ -59,7 +59,7 @@ async function sendAdminCredentials(email: string, password: string) {
                     <p><strong>Email:</strong> ${email}</p>
                     <p><strong>Password:</strong> ${password}</p>
                     <p>Please login and change your password immediately.</p>
-                    <p><a href="${env.NEXTAUTH_URL}/login">Login Here</a></p>
+                    <p><a href="${env.NEXTAUTH_URL || 'http://localhost:3000'}/login">Login Here</a></p>
                 </div>
             `,
         };
