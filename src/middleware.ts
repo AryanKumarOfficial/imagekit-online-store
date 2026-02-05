@@ -40,7 +40,12 @@ export default withAuth(
                 if (
                     pathname.startsWith("/api/products") ||
                     pathname.startsWith("/products") ||
-                    pathname === "/"
+                    pathname === "/" ||
+                    pathname === "/about" ||
+                    pathname === "/contact" ||
+                    pathname === "/privacy" ||
+                    pathname === "/terms" ||
+                    pathname === "/refund-policy"
                 ) {
                     return true;
                 }
