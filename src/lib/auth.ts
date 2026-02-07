@@ -49,16 +49,29 @@ export const authOptions: NextAuthOptions = {
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Invalid credentials");
                 }
+                const email = credentials.email.trim();
+                const password = credentials.password;
+
                 try {
                     await connectToDatabase();
-                    const user = await User.findOne({email: credentials.email});
+                    const user = await User.findOne({email});
                     if (!user) {
                         throw new Error("No user found with this email");
                     }
-                    const isValid = await bcrypt.compare(
-                        credentials.password,
+
+                    let isValid = await bcrypt.compare(
+                        password,
                         user.password
                     );
+
+                    // Handle legacy plaintext passwords by checking direct equality
+                    // and migrating to hashed password if matched
+                    if (!isValid && user.password === password) {
+                        console.log(`Migrating plaintext password for user: ${email}`);
+                        user.password = password; // Trigger pre-save hook to hash
+                        await user.save();
+                        isValid = true;
+                    }
 
                     if (!isValid) {
                         throw new Error("Invalid password");
