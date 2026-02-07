@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
           <p>
-            ImageKit Shop ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website and purchase our digital products.
+            ImageKit Shop (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website and purchase our digital products.
           </p>
         </section>
 
@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
             We do not store your financial data such as credit card numbers or bank account details. All payments are processed securely through <strong>Razorpay</strong>, our trusted payment gateway partner.
           </p>
           <p className="mt-2">
-            When you make a purchase, you are redirected to Razorpay's secure checkout. Razorpay processes your payment information in accordance with their privacy policy and industry security standards (PCI-DSS).
+            When you make a purchase, you are redirected to Razorpay&apos;s secure checkout. Razorpay processes your payment information in accordance with their privacy policy and industry security standards (PCI-DSS).
           </p>
         </section>
 
